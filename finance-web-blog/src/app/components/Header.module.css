@@ -1,0 +1,8 @@
+.image {
+  width: "100vw" !important;
+  height: "25vh" !important;
+  background-image: 'url("/headerImg.png")' !important;
+  background-size: "cover" !important;
+  background-position: "center" !important;
+  background-repeat: "no-repeat" !important;
+}
