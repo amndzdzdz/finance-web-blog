@@ -1,6 +1,5 @@
-import Image from "next/image";
 import HeaderImage from "./components/HeaderImage.js";
-import styles from "./page.module.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import NewsCard from "./components/NewsCard.js";
 
 export default function Home() {
@@ -24,7 +23,19 @@ export default function Home() {
   return (
     <>
       <HeaderImage></HeaderImage>
-      <NewsCard></NewsCard>
+      <div className="container">
+        <div className="row m-3">
+          <div className="col m-2">
+            <NewsCard></NewsCard>
+          </div>
+          <div className="col m-2">
+            <NewsCard></NewsCard>
+          </div>
+          <div className="col m-2">
+            <NewsCard></NewsCard>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
