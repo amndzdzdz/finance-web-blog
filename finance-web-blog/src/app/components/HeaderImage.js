@@ -15,7 +15,7 @@ export default function HeaderImage() {
       >
         <h1 className="text-white">Financial Analysis and News</h1>
       </div>
-      <div className="container-fluid" style={{ backgroundColor: "#073f67" }}>
+      <div className="container-fluid border-top" style={{ backgroundColor: "#073f67" }}>
         <div className="container text-center text-light w-50 pt-3 pb-3">
           Get all the latest news, reports and financial Analysis for leading
           companies around the world!
