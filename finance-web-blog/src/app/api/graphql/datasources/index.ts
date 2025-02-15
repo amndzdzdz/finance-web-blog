@@ -21,7 +21,31 @@ export default class Posts extends MongoDataSource<blogDocument> {
         throw new Error("Failed to fetch posts");
       }
     }
+
+    async getMainPosts() {
+      try {
+        return await BlogModel.find();
+      } catch (error) {
+        throw new Error("Failed to fetch posts");
+      }
+    }
   
+    async getSpecificPost({ input }: any) {
+      try {
+        const {id, ...updatedValues} = input;
+        const updatedPost = await BlogModel.findByIdAndUpdate(id, updatedValues, { new: true});
+
+        if (!updatedPost) {
+          throw new Error("The post was not found.")        
+        }
+
+        return updatedPost;
+
+      } catch (error) {
+        throw new Error("Failed to update post");
+      }
+    }
+
     // Function to create a new blog entry
     async createPost({ input }: any) {
       try {
