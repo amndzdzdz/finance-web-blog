@@ -30,7 +30,7 @@ export default class Posts extends MongoDataSource<blogDocument> {
       }
     }
   
-    async getSpecificPost({ input }: any) {
+    async updatePost({ input }: any) {
       try {
         const {id, ...updatedValues} = input;
         const updatedPost = await BlogModel.findByIdAndUpdate(id, updatedValues, { new: true});
@@ -43,6 +43,18 @@ export default class Posts extends MongoDataSource<blogDocument> {
 
       } catch (error) {
         throw new Error("Failed to update post");
+      }
+    }
+
+    async deletePost({ input }: any) {
+      try {
+        const { id } = input;
+        const deletedPost = BlogModel.findByIdAndDelete(id);
+
+        return deletedPost;
+
+      } catch (error) {
+        throw new Error("Failed to create posts");
       }
     }
 

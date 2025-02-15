@@ -26,6 +26,10 @@ const typeDefs = `#graphql
     content: String!
   }
 
+  input DeletePostInput {
+    id: ID!
+  }
+
   input UpdatePostInput {
     id: ID!
     author_name: String!
@@ -44,6 +48,7 @@ const typeDefs = `#graphql
   type Mutation {
     createPost(input: NewPostInput!): Post
     updatePost(input: UpdatePostInput!): Post
+    deletePost(input: DeletePostInput!): Post
   }
 `;
 

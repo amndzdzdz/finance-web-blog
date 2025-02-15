@@ -24,13 +24,14 @@ const resolvers = {
       }
     },
   },
-  
+
   Mutation: {
     createPost: async (_: any, { input }: any, context: any) => {
       try {
         const newPost = await context.dataSources.posts.createPost({
           input,
         });
+
         return newPost;
       } catch (error) {
         throw new Error("Failed to create post");
@@ -39,12 +40,25 @@ const resolvers = {
 
     updatePost: async (_: any, { input }: any, context: any) => {
       try {
-        const updatedPost = await context.dataSources.posts.getSpecificPost({
+        const updatedPost = await context.dataSources.posts.updatePost({
           input,
         });
+
         return updatedPost;
       } catch (error) {
         throw new Error("Failed to create post");
+      }
+    },
+
+    deletePost: async (_: any, { input }: any, context: any) => {
+      try {
+        const deletedPost = await context.dataSources.posts.deletePost({
+          input,
+        });
+
+        return deletedPost;
+      } catch (error) {
+        throw new Error("Failed to delete post", error.message);
       }
     },
   },
