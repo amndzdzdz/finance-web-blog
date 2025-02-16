@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Header from "./components/Header.js";
 import Footer from "./components/Footer.js";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,12 +22,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <Header></Header>
-        {children}
-        <Footer></Footer>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={`${geistSans.variable} ${geistMono.variable}`}>
+          <Header></Header>
+          {children}
+          <Footer></Footer>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

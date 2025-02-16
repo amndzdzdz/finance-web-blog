@@ -12,6 +12,7 @@
     "@apollo/client": "^3.12.11",
     "@apollo/server": "^4.11.3",
     "@as-integrations/next": "^3.2.0",
+    "@clerk/nextjs": "^6.11.3",
     "@popperjs/core": "^2.11.8",
     "apollo-datasource-mongodb": "^0.6.0",
     "bootstrap": "^5.3.3",
