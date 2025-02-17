@@ -1,0 +1,29 @@
+.customCard {
+  display: flex;
+  flex-direction: row;
+  border: none;
+  align-items: center;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card-img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .customCard {
+    flex-direction: column;
+  }
+
+  .card-img {
+    height: 200px;
+  }
+}
