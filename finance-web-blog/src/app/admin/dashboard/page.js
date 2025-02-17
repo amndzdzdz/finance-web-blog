@@ -19,7 +19,10 @@ export default async function AdminDashboard() {
         <div className="col-6 bg-primary d-flex align-items-center justify-content-center">
           <Link
             className="btn btn-primary border border-light"
-            href="/admin/dashboard/editpost"
+            href={{
+              pathname: "/admin/dashboard/editpost",
+              query: { action: "create-post" },
+            }}
           >
             Create New Post
           </Link>
@@ -27,7 +30,10 @@ export default async function AdminDashboard() {
         <div className="col-6 d-flex align-items-center justify-content-center">
           <Link
             className="text-primary btn border border-primary"
-            href="/admin/dashboard/editpost"
+            href={{
+              pathname: "/admin/dashboard/editpost",
+              query: { action: "modify-post" },
+            }}
           >
             Update / Delete Post
           </Link>
