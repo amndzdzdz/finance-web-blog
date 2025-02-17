@@ -1,6 +1,12 @@
 import HeaderImage from "./components/HeaderImage.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 import NewsCard from "./components/NewsCard.js";
+import { Merriweather } from "next/font/google";
+
+const merriweather = Merriweather({
+  subsets: ["latin"],
+  weight: ["300", "400", "700"],
+});
 
 export default function Home() {
   const posts = [
@@ -21,7 +27,7 @@ export default function Home() {
   ];
 
   return (
-    <>
+    <div className={merriweather.className}>
       <HeaderImage></HeaderImage>
       <div className="container">
         <div className="row m-3">
@@ -36,6 +42,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

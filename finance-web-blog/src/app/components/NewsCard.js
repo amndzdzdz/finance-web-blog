@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function NewsCard() {
   const posts = {
     id: "1234",
-    image: "/images/stock-market.jpg",
+    image: "https://picsum.photos/450/250",
     title: "Stock Market Trends for 2025",
     summary:
       "Discover the latest stock market trends and forecasts for the upcoming year.",
@@ -16,13 +16,16 @@ export default function NewsCard() {
 
   return (
     <>
-      <div className="card" style={{ width: "18rem" }}>
+      <div
+        className="card border-0 shadow-lg p-3 mb-5 bg-white rounded"
+        style={{ width: "18rem" }}
+      >
         <img
           className="card-img-top"
-          src="stonks.jpg"
+          src="https://picsum.photos/450/250"
           alt="Card image cap"
         ></img>
-        <hr></hr>
+
         <div className="card-body">
           <Link
             className="fw-bold fs-6 text-decoration-underline"
@@ -35,6 +38,10 @@ export default function NewsCard() {
             upcoming year.
           </p>
         </div>
+
+        <a href="/" className="btn btn-outline-primary">
+          Read More
+        </a>
       </div>
     </>
   );
