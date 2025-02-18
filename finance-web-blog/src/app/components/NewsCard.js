@@ -17,7 +17,7 @@ export default function NewsCard() {
   return (
     <>
       <div
-        className="card border-0 shadow-lg p-3 mb-5 bg-white rounded"
+        className="card border-0 shadow p-3 mb-5 bg-white rounded"
         style={{ width: "18rem" }}
       >
         <img
