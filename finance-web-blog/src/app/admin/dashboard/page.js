@@ -20,7 +20,7 @@ export default async function AdminDashboard() {
           <Link
             className="btn btn-primary border border-light"
             href={{
-              pathname: "/admin/dashboard/editpost",
+              pathname: "/admin/dashboard/createPost",
               query: { action: "create-post" },
             }}
           >
