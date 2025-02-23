@@ -1,9 +1,16 @@
-import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
+// client/apolloClient.js
+import { ApolloClient, InMemoryCache } from "@apollo/client";
+
+// Check if running on server or client
+const isServer = typeof window === "undefined";
+
+// Use absolute URL for server-side requests, and relative for client-side
+const uri = isServer
+  ? "http://localhost:3000/api/graphql" // Absolute URL for server-side
+  : "/api/graphql"; // Relative URL for client-side
 
 const client = new ApolloClient({
-  link: new HttpLink({
-    uri: "http:localhost:3000/api/graphql",
-  }),
+  uri,
   cache: new InMemoryCache(),
 });
 
