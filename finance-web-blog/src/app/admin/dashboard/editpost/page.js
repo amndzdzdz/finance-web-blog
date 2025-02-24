@@ -12,6 +12,20 @@ import { useState, useEffect } from "react";
 const GET_ALL_POSTS = gql`
   query {
     getAllPosts {
+      author_name
+      domain
+      content
+      heading
+      id
+      read_time
+      summary
+    }
+  }
+`;
+
+const UPDATE_POST = gql`
+  mutation updatePost($input: UpdatePostInput!) {
+    updatePost(input: $input) {
       id
       author_name
       heading
@@ -19,6 +33,14 @@ const GET_ALL_POSTS = gql`
       read_time
       summary
       content
+    }
+  }
+`;
+
+const DELETE_POST = gql`
+  mutation deletePost($input: DeletePostInput!) {
+    deletePost(input: $input) {
+      id
     }
   }
 `;
@@ -66,6 +88,7 @@ export default function Editpost() {
               let value = e.target.value;
               setSelectedPost({
                 edit: true,
+                id: blogPosts[value]["id"],
                 heading: blogPosts[value]["heading"],
                 author_name: blogPosts[value]["author_name"],
                 domain: blogPosts[value]["domain"],
@@ -91,7 +114,7 @@ export default function Editpost() {
                 type="text"
                 name="title"
                 className="form-control"
-                id="titleInput"
+                id="title"
                 placeholder="Title"
                 defaultValue={
                   "edit" in selectedPost ? selectedPost["heading"] : ""
@@ -103,7 +126,7 @@ export default function Editpost() {
                 type="text"
                 name="summary"
                 className="form-control"
-                id="summaryInput"
+                id="summary"
                 placeholder="Enter a short description that will be displayed on the webpage"
                 defaultValue={
                   "edit" in selectedPost ? selectedPost["summary"] : ""
@@ -126,6 +149,7 @@ export default function Editpost() {
               className="form-select mt-3"
               aria-label="Default select example"
               name="domain"
+              id="domain"
             >
               <option defaultValue>
                 {"edit" in selectedPost
@@ -139,7 +163,7 @@ export default function Editpost() {
             <input
               type="number"
               className="form-control mt-3"
-              id="timeInput"
+              id="time"
               name="time"
               placeholder="Estimated Read time"
               defaultValue={
@@ -152,6 +176,7 @@ export default function Editpost() {
               className="form-control min-vh-100 mt-3"
               placeholder="Content"
               name="content"
+              id="content"
               defaultValue={
                 "edit" in selectedPost ? selectedPost["content"] : ""
               }
@@ -159,14 +184,48 @@ export default function Editpost() {
           </form>
         </div>
         <div className="container-fluid justify-content-center">
-          <button type="submit" className="btn btn-outline-primary me-3">
+          <button
+            disabled={"edit" in selectedPost ? false : true}
+            onClick={async () => {
+              try {
+                const data = await client.mutate({
+                  mutation: UPDATE_POST,
+                  variables: {
+                    input: {
+                      id: selectedPost["id"],
+                      author_name: document.getElementById("author").value,
+                      heading: document.getElementById("title").value,
+                      domain: document.getElementById("domain").value,
+                      read_time: document.getElementById("time").value,
+                      summary: document.getElementById("summary").value,
+                      content: document.getElementById("content").value,
+                    },
+                  },
+                });
+                location.reload();
+              } catch (error) {
+                console.error("Error fetching posts:", error);
+                setLoading(false);
+              }
+            }}
+            type="button"
+            className="btn btn-outline-primary me-3"
+          >
             Update post
           </button>
           <button
+            disabled={"edit" in selectedPost ? false : true}
             onClick={async () => {
               try {
-                const data = await client.query({ query: GET_ALL_POSTS });
-                console.log("yes worked, data:", data);
+                const data = await client.mutate({
+                  mutation: DELETE_POST,
+                  variables: {
+                    input: {
+                      id: selectedPost["id"],
+                    },
+                  },
+                });
+                location.reload();
               } catch (error) {
                 console.error("Error fetching posts:", error);
                 setLoading(false);
