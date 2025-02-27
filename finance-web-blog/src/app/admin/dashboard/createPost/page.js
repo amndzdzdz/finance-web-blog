@@ -1,123 +1,42 @@
-import { redirect } from "next/navigation";
-import { SignIn, useUser } from "@clerk/nextjs";
+"use client";
+import React from "react";
+import dynamic from "next/dynamic";
 import "bootstrap/dist/css/bootstrap.min.css";
-import client from "../../../client/apolloClient";
-import Link from "next/link";
-import { gql } from "@apollo/client";
+import "suneditor/dist/css/suneditor.min.css"; // Import Sun Editor's CSS File
+import { buttonList } from "suneditor-react";
+import { useState } from "react";
 
-const CREATE_POST = gql`
-  mutation createPost($input: NewPostInput!) {
-    createPost(input: $input) {
-      author_name
-      heading
-      domain
-      read_time
-      summary
-      content
-    }
-  }
-`;
+const SunEditor = dynamic(() => import("suneditor-react"), {
+  ssr: false,
+});
 
-export default function Editpost() {
-  <SignIn />;
-
-  async function createPost(formData) {
-    "use server";
-    try {
-      console.log(formData);
-      const data = await client.mutate({
-        mutation: CREATE_POST,
-        variables: {
-          input: {
-            author_name: formData.get("author"),
-            heading: formData.get("title"),
-            domain: formData.get("domain"),
-            read_time: formData.get("time"),
-            summary: formData.get("summary"),
-            content: formData.get("content"),
-          },
-        },
-      });
-    } catch (error) {
-      throw new Error("An error occured:", error);
-    }
-  }
+const MyComponent = (props) => {
+  const [editorContent, setEditorContent] = useState("");
 
   return (
-    <>
-      <Link
-        className="btn btn-outline-danger text-left mt-5 ms-5"
-        href="/admin/dashboard"
+    <div className="m-5">
+      <h1 className="text-center mb-5">Create your blog post</h1>
+      <SunEditor
+        id="editor"
+        name="blog"
+        width="100%"
+        height="100%"
+        setOptions={{
+          height: 200,
+          buttonList: buttonList.complex,
+        }}
+        onChange={(content) => {
+          setEditorContent(content);
+        }}
+      />
+
+      <button
+        onClick={console.log(editorContent)}
+        className="justify-content-center btn btn-outline-primary"
       >
-        Go back
-      </Link>
-      <div className="container-fluid text-center">
-        <h1>Create a new post!</h1>
-        <div className="m-5">
-          <form action={createPost}>
-            <div className="form-group">
-              <input
-                required
-                type="text"
-                name="title"
-                className="form-control"
-                id="title"
-                placeholder="Title"
-              ></input>
-            </div>
-            <div className="form-group mt-3">
-              <input
-                required
-                type="text"
-                name="summary"
-                className="form-control"
-                id="summary"
-                placeholder="Enter a short description that will be displayed on the webpage"
-              ></input>
-            </div>
-            <div className="form-group mt-3">
-              <input
-                required
-                type="text"
-                className="form-control"
-                name="author"
-                id="author"
-                placeholder="Author"
-              ></input>
-            </div>
-            <select
-              required
-              className="form-select mt-3"
-              aria-label="Default select example"
-              name="domain"
-              id="domain"
-            >
-              <option defaultValue>Choose a domain</option>
-              <option value="1">Microeconomy</option>
-              <option value="2">Macroeconomy</option>
-              <option value="3">Politics</option>
-            </select>
-            <input
-              required
-              type="number"
-              className="form-control mt-3"
-              id="time"
-              name="time"
-              placeholder="Estimated Read time"
-            ></input>
-            <textarea
-              required
-              className="form-control min-vh-100 mt-3"
-              placeholder="Content"
-              name="content"
-              id="content"
-            ></textarea>
-            <button type="submit" className="btn btn-outline-primary me-3">
-              Create post
-            </button>
-          </form>
-        </div>
-      </div>
-    </>
+        Create Post
+      </button>
+    </div>
   );
-}
+};
+export default MyComponent;
