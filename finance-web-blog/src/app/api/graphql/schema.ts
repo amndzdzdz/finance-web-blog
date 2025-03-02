@@ -1,42 +1,46 @@
 const typeDefs = `#graphql
   type Post {
-    id: ID!
-    author_name: String!
-    heading: String!
+    id: String!
+    author: String!
+    thumbnailUrl: String!
+    title: String!
     domain: String!
-    read_time: String!
-    summary: String!
+    time: String!
+    description: String!
     content: String!
 }
     type ReducedPost {
-        id: ID!
-        author_name: String!
-        heading: String!
+        id: String!
+        author: String!
+        thumbnailUrl: String!
+        title: String!
         domain: String!
-        read_time: String!
-        summary: String!
+        time: String!
+        description: String!
     }
   
   input NewPostInput {
-    author_name: String!
-    heading: String!
+    author: String!
+    thumbnailUrl: String!
+    title: String!
     domain: String!
-    read_time: String!
-    summary: String!
+    time: String!
+    description: String!
     content: String!
   }
 
   input DeletePostInput {
-    id: ID!
+    id: String!
   }
 
   input UpdatePostInput {
     id: ID!
-    author_name: String!
-    heading: String!
+    author: String!
+    thumbnailUrl: String!
+    title: String!
     domain: String!
-    read_time: String!
-    summary: String!
+    time: String!
+    description: String!
     content: String!   
   }
 

@@ -4,11 +4,12 @@ import { ObjectId } from "mongoose";
 
 interface blogDocument {
   _id: ObjectId;
-  author_name: String;
-  heading: String;
+  author: String;
+  thumbnailUrl: String;
+  title: String;
   domain: String;
-  read_time: String;
-  summary: String;
+  time: String;
+  description: String;
   content: String;
 }
 
@@ -54,13 +55,14 @@ export default class Posts extends MongoDataSource<blogDocument> {
 
       return deletedPost;
     } catch (error) {
-      throw new Error("Failed to create posts");
+      throw new Error("Failed to delete posts");
     }
   }
 
   // Function to create a new blog entry
   async createPost({ input }: any) {
     try {
+      console.log({ ...input });
       return await BlogModel.create({ ...input });
     } catch (error) {
       throw new Error("Failed to create posts");

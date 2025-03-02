@@ -4,9 +4,11 @@ const { Schema } = mongoose;
 
 const blogSchema = new Schema({
   // Define blog fields here matching the GraphQL schema
-  author_name: { type: String, required: [true, "All fields are required"] },
+  author: { type: String, required: [true, "All fields are required"] },
 
-  heading: {
+  thumbnailUrl: { type: String, required: [true, "All fields are required"] },
+
+  title: {
     type: String,
     required: [true, "All fields are required"],
   },
@@ -16,12 +18,12 @@ const blogSchema = new Schema({
     required: [true, "All fields are required"],
   },
 
-  read_time: {
+  time: {
     type: String,
     required: [true, "All fields are required"],
   },
 
-  summary: {
+  description: {
     type: String,
     required: [true, "All fields are required"],
   },
@@ -30,20 +32,7 @@ const blogSchema = new Schema({
     type: String,
     required: [true, "All fields are required"],
   },
-  
 });
 
-export default mongoose.models.BlogModel || mongoose.model("BlogModel", blogSchema);
-
-/*
-mutation createPost($input: NewPostInput!) {
-  createPost(input: $input) {
-    id
-    author_name
-    heading
-    domain
-    read_time
-    summary
-    content
-  }
-} */
+export default mongoose.models.BlogModel ||
+  mongoose.model("BlogModel", blogSchema);
