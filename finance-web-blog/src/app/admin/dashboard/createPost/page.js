@@ -92,17 +92,17 @@ const MyComponent = (props) => {
   }
 
   async function sendPost() {
-    if (thumbnailUrl === null) {
+    if (!thumbnailUrl.trim()) {
       alert("A thumbnail is required!");
       return;
     }
 
-    if (title === null) {
+    if (!title.trim()) {
       alert("A title is required!");
       return;
     }
 
-    if (author === null) {
+    if (!author.trim()) {
       alert("An author is required!");
       return;
     }
@@ -112,17 +112,17 @@ const MyComponent = (props) => {
       return;
     }
 
-    if (time === null) {
+    if (!time.trim()) {
       alert("The read time is required");
       return;
     }
 
-    if (editorContent === null) {
+    if (!editorContent.trim()) {
       alert("You didn't write anything");
       return;
     }
 
-    if (description === null) {
+    if (!description.trim()) {
       alert("A short description is required");
       return;
     }
@@ -143,14 +143,8 @@ const MyComponent = (props) => {
         },
       });
       alert("Post created successfully!");
+      location.reload();
     } catch (error) {
-      console.log(author);
-      console.log(thumbnailUrl);
-      console.log(title);
-      console.log(domain);
-      console.log(time);
-      console.log(description);
-      console.log(editorContent);
       throw new Error("Couldn't upload post, error: " + error.message);
     }
   }
