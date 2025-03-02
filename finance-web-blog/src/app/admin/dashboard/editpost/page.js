@@ -1,24 +1,26 @@
 "use client";
-//import { checkRole } from "../../../utils/roles";
-import { redirect } from "next/navigation";
 import { SignIn } from "@clerk/nextjs";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Dashboard from "../../../components/Dashboard";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { gql } from "@apollo/client";
 import client from "../../../client/apolloClient";
 import { useState, useEffect } from "react";
+import "suneditor/dist/css/suneditor.min.css"; // Import Sun Editor's CSS File
+import { buttonList } from "suneditor-react";
+import { CldUploadWidget } from "next-cloudinary";
 
 const GET_ALL_POSTS = gql`
   query {
     getAllPosts {
-      author_name
+      author
+      thumbnailUrl
       domain
       content
-      heading
+      title
       id
-      read_time
-      summary
+      time
+      description
     }
   }
 `;
@@ -27,11 +29,12 @@ const UPDATE_POST = gql`
   mutation updatePost($input: UpdatePostInput!) {
     updatePost(input: $input) {
       id
-      author_name
-      heading
+      author
+      thumbnailUrl
+      title
       domain
-      read_time
-      summary
+      time
+      description
       content
     }
   }
@@ -45,13 +48,24 @@ const DELETE_POST = gql`
   }
 `;
 
+const SunEditor = dynamic(() => import("suneditor-react"), {
+  ssr: false,
+});
+
 export default function Editpost() {
   // Protect the page from users who are not admins
   <SignIn />;
 
   const [loading, setLoading] = useState(true);
   const [blogPosts, setBlogPosts] = useState([]);
-  const [selectedPost, setSelectedPost] = useState({});
+  const [id, setId] = useState(null);
+  const [editorContent, setEditorContent] = useState(null);
+  const [thumbnailUrl, setThumbnailUrl] = useState();
+  const [title, setTitle] = useState(null);
+  const [domain, setDomain] = useState(null);
+  const [time, setTime] = useState(null);
+  const [description, setDescription] = useState(null);
+  const [author, setAuthor] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,47 +81,77 @@ export default function Editpost() {
     fetchData();
   }, []);
 
+  function handleOnUpload(result, widget, error) {
+    if (error) {
+      return;
+    }
+    setThumbnailUrl(result?.info.secure_url);
+    widget.close({
+      quiet: true,
+    });
+  }
+
   return (
     <>
-      <Link
-        className="btn btn-outline-danger text-left mt-5 ms-5"
-        href="/admin/dashboard"
-      >
-        Go back
-      </Link>
-      <div className="container-fluid text-center">
-        <h1>Delete or modify an existing post!</h1>
+      <div className="container mt-5">
+        <Link
+          className="btn btn-outline-danger text-left ms-2"
+          href="/admin/dashboard"
+        >
+          Go back
+        </Link>
+      </div>
+      <div className="container">
+        <h1 className="text-center">Delete or modify an existing post!</h1>
 
         {loading ? (
           <p>Loading...</p>
         ) : (
           <select
-            className="form-select m-5"
+            className="form-select mt-3 ms-2"
             aria-label="Default select example"
             onChange={(e) => {
               let value = e.target.value;
-              setSelectedPost({
-                edit: true,
-                id: blogPosts[value]["id"],
-                heading: blogPosts[value]["heading"],
-                author_name: blogPosts[value]["author_name"],
-                domain: blogPosts[value]["domain"],
-                read_time: blogPosts[value]["read_time"],
-                summary: blogPosts[value]["summary"],
-                content: blogPosts[value]["content"],
-              });
+              setId(blogPosts[value]["id"]);
+              setEditorContent(blogPosts[value]["content"]);
+              setThumbnailUrl(blogPosts[value]["thumbnailUrl"]);
+              setTitle(blogPosts[value]["title"]);
+              setDomain(blogPosts[value]["domain"]);
+              setTime(blogPosts[value]["time"]);
+              setDescription(blogPosts[value]["description"]);
+              setAuthor(blogPosts[value]["author"]);
             }}
           >
             <option defaultValue>Choose a blogentry to change/delete</option>
             {blogPosts.map((post, index) => (
               <option key={post.id} value={index}>
-                {post.heading}
+                {post.title}
               </option>
             ))}
           </select>
         )}
 
-        <div className="m-5">
+        <div className="container mt-5">
+          <CldUploadWidget uploadPreset="ml_default" onSuccess={handleOnUpload}>
+            {({ open }) => {
+              function handleOnClick(e) {
+                e.preventDefault();
+                open();
+              }
+              return (
+                <button
+                  type="button"
+                  className="btn btn-primary text-white"
+                  onClick={handleOnClick}
+                >
+                  Change thumbnail
+                </button>
+              );
+            }}
+          </CldUploadWidget>
+        </div>
+
+        <div className="container mt-3">
           <form>
             <div className="form-group">
               <input
@@ -116,21 +160,23 @@ export default function Editpost() {
                 className="form-control"
                 id="title"
                 placeholder="Title"
-                defaultValue={
-                  "edit" in selectedPost ? selectedPost["heading"] : ""
-                }
+                defaultValue={title !== null ? title : ""}
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                }}
               ></input>
             </div>
             <div className="form-group mt-3">
               <input
                 type="text"
-                name="summary"
+                name="description"
                 className="form-control"
-                id="summary"
+                id="description"
                 placeholder="Enter a short description that will be displayed on the webpage"
-                defaultValue={
-                  "edit" in selectedPost ? selectedPost["summary"] : ""
-                }
+                defaultValue={description !== null ? description : ""}
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                }}
               ></input>
             </div>
             <div className="form-group mt-3">
@@ -140,9 +186,10 @@ export default function Editpost() {
                 name="author"
                 id="author"
                 placeholder="Author"
-                defaultValue={
-                  "edit" in selectedPost ? selectedPost["author_name"] : ""
-                }
+                defaultValue={author !== null ? author : ""}
+                onChange={(e) => {
+                  setAuthor(e.target.value);
+                }}
               ></input>
             </div>
             <select
@@ -150,15 +197,14 @@ export default function Editpost() {
               aria-label="Default select example"
               name="domain"
               id="domain"
+              onChange={(e) => {
+                setDomain(e.target.value);
+              }}
             >
-              <option defaultValue>
-                {"edit" in selectedPost
-                  ? selectedPost["domain"]
-                  : "Select domain"}
-              </option>
-              <option value="1">Microeconomy</option>
-              <option value="2">Macroeconomy</option>
-              <option value="3">Politics</option>
+              <option defaultValue>{domain !== null ? domain : ""}</option>
+              <option value="Microeconomics">Microeconomy</option>
+              <option value="Macroeconomics">Macroeconomy</option>
+              <option value="Politics">Politics</option>
             </select>
             <input
               type="number"
@@ -166,42 +212,50 @@ export default function Editpost() {
               id="time"
               name="time"
               placeholder="Estimated Read time"
-              defaultValue={
-                "edit" in selectedPost
-                  ? parseInt(selectedPost["read_time"])
-                  : ""
-              }
+              defaultValue={time !== null ? time : ""}
+              onChange={(e) => {
+                setTime(e.target.value);
+              }}
             ></input>
-            <textarea
-              className="form-control min-vh-100 mt-3"
-              placeholder="Content"
-              name="content"
-              id="content"
-              defaultValue={
-                "edit" in selectedPost ? selectedPost["content"] : ""
-              }
-            ></textarea>
+            <div className="mt-4">
+              <SunEditor
+                id="editor"
+                name="blog"
+                width="100%"
+                height="100%"
+                setContents={editorContent !== null ? editorContent : ""}
+                setOptions={{
+                  height: 200,
+                  buttonList: buttonList.complex,
+                }}
+                onChange={(content) => {
+                  setEditorContent(content);
+                }}
+              />
+            </div>
           </form>
         </div>
-        <div className="container-fluid justify-content-center">
+        <div className="container mt-3 text-center">
           <button
-            disabled={"edit" in selectedPost ? false : true}
+            disabled={author !== null ? false : true}
             onClick={async () => {
               try {
                 const data = await client.mutate({
                   mutation: UPDATE_POST,
                   variables: {
                     input: {
-                      id: selectedPost["id"],
-                      author_name: document.getElementById("author").value,
-                      heading: document.getElementById("title").value,
-                      domain: document.getElementById("domain").value,
-                      read_time: document.getElementById("time").value,
-                      summary: document.getElementById("summary").value,
-                      content: document.getElementById("content").value,
+                      id: id,
+                      author: author,
+                      thumbnailUrl: thumbnailUrl,
+                      title: title,
+                      domain: domain,
+                      time: time,
+                      description: description,
+                      content: editorContent,
                     },
                   },
                 });
+                alert("Post updated successfully!");
                 location.reload();
               } catch (error) {
                 console.error("Error fetching posts:", error);
@@ -214,17 +268,18 @@ export default function Editpost() {
             Update post
           </button>
           <button
-            disabled={"edit" in selectedPost ? false : true}
+            disabled={author !== null ? false : true}
             onClick={async () => {
               try {
                 const data = await client.mutate({
                   mutation: DELETE_POST,
                   variables: {
                     input: {
-                      id: selectedPost["id"],
+                      id: id,
                     },
                   },
                 });
+                alert("Post deleted sucessfully!");
                 location.reload();
               } catch (error) {
                 console.error("Error fetching posts:", error);
