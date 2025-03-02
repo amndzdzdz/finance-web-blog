@@ -4,8 +4,24 @@ import dynamic from "next/dynamic";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "suneditor/dist/css/suneditor.min.css"; // Import Sun Editor's CSS File
 import { buttonList } from "suneditor-react";
+import client from "../../../client/apolloClient";
 import { useState } from "react";
-import { CldUploadButton, CldUploadWidget } from "next-cloudinary";
+import { CldUploadWidget } from "next-cloudinary";
+import { gql } from "@apollo/client";
+
+const CREATE_POST = gql`
+  mutation createPost($input: NewPostInput!) {
+    createPost(input: $input) {
+      author
+      thumbnailUrl
+      title
+      domain
+      time
+      description
+      content
+    }
+  }
+`;
 
 const SunEditor = dynamic(() => import("suneditor-react"), {
   ssr: false,
@@ -67,7 +83,7 @@ const MyComponent = (props) => {
           ],
         });
       } catch (error) {
-        console.error("Image upload error:", error);
+        console.error("Image upload error:" + error.message);
         uploadHandler({
           errorMessage: "Image upload failed. Please try again.",
         });
@@ -75,7 +91,7 @@ const MyComponent = (props) => {
     };
   }
 
-  function sendPost() {
+  async function sendPost() {
     if (thumbnailUrl === null) {
       alert("A thumbnail is required!");
       return;
@@ -107,8 +123,35 @@ const MyComponent = (props) => {
     }
 
     if (description === null) {
-      alert("The read time is required");
+      alert("A short description is required");
       return;
+    }
+
+    try {
+      const data = await client.mutate({
+        mutation: CREATE_POST,
+        variables: {
+          input: {
+            author: author,
+            thumbnailUrl: thumbnailUrl,
+            title: title,
+            domain: domain,
+            time: time,
+            description: description,
+            content: editorContent,
+          },
+        },
+      });
+      alert("Post created successfully!");
+    } catch (error) {
+      console.log(author);
+      console.log(thumbnailUrl);
+      console.log(title);
+      console.log(domain);
+      console.log(time);
+      console.log(description);
+      console.log(editorContent);
+      throw new Error("Couldn't upload post, error: " + error.message);
     }
   }
 
@@ -183,9 +226,9 @@ const MyComponent = (props) => {
             }}
           >
             <option defaultValue>Choose a domain</option>
-            <option value="1">Microeconomy</option>
-            <option value="2">Macroeconomy</option>
-            <option value="3">Politics</option>
+            <option value="Microeconomy">Microeconomy</option>
+            <option value="Macroeconomy">Macroeconomy</option>
+            <option value="Politics">Politics</option>
           </select>
           <input
             type="number"
