@@ -47,6 +47,7 @@ const typeDefs = `#graphql
   type Query {
     getAllPosts: [Post]
     getMainPosts: [ReducedPost]
+    getPost(id: String!): Post
   }
     
   type Mutation {

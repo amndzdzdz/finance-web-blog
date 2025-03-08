@@ -23,6 +23,17 @@ const resolvers = {
         throw new Error("Failed to fetch posts");
       }
     },
+    getPost: async (
+      _: any,
+      { id }: any,
+      context: { dataSources: { posts: { getPost: () => any } } }
+    ) => {
+      try {
+        return await context.dataSources.posts.getPost(id);
+      } catch (error) {
+        throw new Error("Failed to fetch post");
+      }
+    },
   },
 
   Mutation: {
@@ -46,7 +57,7 @@ const resolvers = {
 
         return updatedPost;
       } catch (error) {
-        throw new Error("Failed to create post");
+        throw new Error("Failed to update post");
       }
     },
 

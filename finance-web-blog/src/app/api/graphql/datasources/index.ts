@@ -1,6 +1,7 @@
 import BlogModel from "../models";
 import { MongoDataSource } from "apollo-datasource-mongodb";
 import { ObjectId } from "mongoose";
+import Blog from "../../../blogs/page";
 
 interface blogDocument {
   _id: ObjectId;
@@ -28,6 +29,14 @@ export default class Posts extends MongoDataSource<blogDocument> {
       return await BlogModel.find();
     } catch (error) {
       throw new Error("Failed to fetch posts");
+    }
+  }
+
+  async getPost(id: any) {
+    try {
+      return await BlogModel.findById(id);
+    } catch (error) {
+      throw new Error("Failed to find post by id");
     }
   }
 
@@ -62,7 +71,6 @@ export default class Posts extends MongoDataSource<blogDocument> {
   // Function to create a new blog entry
   async createPost({ input }: any) {
     try {
-      console.log({ ...input });
       return await BlogModel.create({ ...input });
     } catch (error) {
       throw new Error("Failed to create posts");
