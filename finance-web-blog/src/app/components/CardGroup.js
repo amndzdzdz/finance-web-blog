@@ -1,6 +1,7 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./CardGroup.module.css";
+import Link from "next/link";
 
 const CardGroup = ({ cards }) => {
   return (
@@ -18,31 +19,43 @@ const CardGroup = ({ cards }) => {
                   <div className="col-md-4">
                     <img
                       className="card-img img-fluid"
-                      src={card.image}
+                      src={card.thumbnailUrl}
                       alt="Card"
                     />
                   </div>
                   <div className="col-md-8 card-body">
                     <h4 className="card-title">{card.title}</h4>
-                    <p className="card-text">{card.text}</p>
-                    <a href={card.link} className="btn btn-outline-primary">
-                      {card.buttonText}
-                    </a>
+                    <p className="card-text">{card.description}</p>
+                    <Link
+                      href={{
+                        pathname: "/blogs",
+                        query: { id: card.id },
+                      }}
+                      className="btn btn-outline-primary"
+                    >
+                      Read More
+                    </Link>
                   </div>
                 </>
               ) : (
                 <>
                   <div className="col-md-8 card-body">
                     <h4 className="card-title">{card.title}</h4>
-                    <p className="card-text">{card.text}</p>
-                    <a href={card.link} className="btn btn-outline-primary">
-                      {card.buttonText}
-                    </a>
+                    <p className="card-text">{card.description}</p>
+                    <Link
+                      href={{
+                        pathname: "/blogs",
+                        query: { id: card.id },
+                      }}
+                      className="btn btn-outline-primary"
+                    >
+                      Read More
+                    </Link>
                   </div>
                   <div className="col-md-4">
                     <img
                       className="card-img img-fluid"
-                      src={card.image}
+                      src={card.thumbnailUrl}
                       alt="Card"
                     />
                   </div>
