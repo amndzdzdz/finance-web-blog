@@ -57,7 +57,10 @@ export default function DropdownMenu() {
               (pathName !== "/" ? "text-dark" : "text-light") +
               " text-decoration-underline"
             }
-            href="/blog-list"
+            href={{
+              pathname: "/blog-list",
+              query: { domain: "macroeconomy" },
+            }}
           >
             Macroeconomics
           </Link>
@@ -68,7 +71,10 @@ export default function DropdownMenu() {
               (pathName !== "/" ? "text-dark" : "text-light") +
               " text-decoration-underline"
             }
-            href="/blog-list"
+            href={{
+              pathname: "/blog-list",
+              query: { domain: "microeconomy" },
+            }}
           >
             Microeconomics
           </Link>
@@ -79,7 +85,10 @@ export default function DropdownMenu() {
               (pathName !== "/" ? "text-dark" : "text-light") +
               " text-decoration-underline"
             }
-            href="/blog-list"
+            href={{
+              pathname: "/blog-list",
+              query: { domain: "politics" },
+            }}
           >
             Politics
           </Link>
