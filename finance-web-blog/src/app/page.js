@@ -1,6 +1,8 @@
-import HeaderImage from "./components/HeaderImage.js";
+import HeaderImage from "./components/HeaderImage";
 import "bootstrap/dist/css/bootstrap.min.css";
-import NewsCard from "./components/NewsCard.js";
+import NewsCard from "./components/NewsCard";
+import { gql } from "@apollo/client";
+import client from "./client/apolloClient";
 import { Merriweather } from "next/font/google";
 
 const merriweather = Merriweather({
@@ -8,39 +10,47 @@ const merriweather = Merriweather({
   weight: ["300", "400", "700"],
 });
 
-export default function Home() {
-  const posts = [
-    {
-      image: "/images/stock-market.jpg",
-      title: "Stock Market Trends for 2025",
-      summary:
-        "Discover the latest stock market trends and forecasts for the upcoming year.",
-      link: "/posts/stock-market-trends-2025",
-    },
-    {
-      image: "/images/investment-strategies.jpg",
-      title: "Top Investment Strategies",
-      summary:
-        "Learn about the best investment strategies to maximize your returns.",
-      link: "/posts/top-investment-strategies",
-    },
-  ];
+// GraphQL Query
+const GET_MAIN_POSTS = gql`
+  query {
+    getMainPosts {
+      id
+      author
+      thumbnailUrl
+      title
+      domain
+      time
+      description
+    }
+  }
+`;
+
+async function fetchPosts() {
+  const { data } = await client.query({ query: GET_MAIN_POSTS });
+  return data.getMainPosts || [];
+}
+
+export default async function Home() {
+  const posts = await fetchPosts(); // Fetch on the server
 
   return (
     <div className={merriweather.className}>
-      <HeaderImage></HeaderImage>
-      <div className="container">
-        <div className="row m-3">
-          <div className="col m-2">
-            <NewsCard></NewsCard>
+      <HeaderImage />
+      <div className="container mt-5">
+        {posts.length === 0 ? (
+          <p>No posts available.</p>
+        ) : (
+          <div className="row">
+            {posts.map((post, index) => (
+              <div
+                key={post.id}
+                className="col-md-4 d-flex justify-content-center mb-4"
+              >
+                <NewsCard post={post} />
+              </div>
+            ))}
           </div>
-          <div className="col m-2">
-            <NewsCard></NewsCard>
-          </div>
-          <div className="col m-2">
-            <NewsCard></NewsCard>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
