@@ -202,8 +202,8 @@ export default function Editpost() {
               }}
             >
               <option defaultValue>{domain !== null ? domain : ""}</option>
-              <option value="Microeconomics">Microeconomy</option>
-              <option value="Macroeconomics">Macroeconomy</option>
+              <option value="Microeconomy">Microeconomy</option>
+              <option value="Macroeconomy">Macroeconomy</option>
               <option value="Politics">Politics</option>
             </select>
             <input
