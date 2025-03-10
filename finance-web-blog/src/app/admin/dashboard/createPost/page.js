@@ -55,8 +55,6 @@ const MyComponent = (props) => {
         return;
       }
 
-      console.log("Uploading image...");
-
       const formData = new FormData();
       formData.append("file", files[0]);
       formData.append("upload_preset", "ml_default");
@@ -83,7 +81,6 @@ const MyComponent = (props) => {
           ],
         });
       } catch (error) {
-        console.error("Image upload error:" + error.message);
         uploadHandler({
           errorMessage: "Image upload failed. Please try again.",
         });
@@ -92,7 +89,7 @@ const MyComponent = (props) => {
   }
 
   async function sendPost() {
-    if (!thumbnailUrl.trim()) {
+    if (!thumbnailUrl) {
       alert("A thumbnail is required!");
       return;
     }
