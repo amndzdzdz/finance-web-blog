@@ -41,9 +41,9 @@ export default async function Page({ searchParams }) {
           blogs
         </Link>
         <span>&gt;</span>
-        <Link className="m-2" href="/">
+        <span className="m-2" href="/">
           {domain}
-        </Link>
+        </span>
       </div>
       <CardGroup cards={cardsData} />
     </div>
