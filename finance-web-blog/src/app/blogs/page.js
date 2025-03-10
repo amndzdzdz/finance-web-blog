@@ -1,85 +1,62 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import Link from "next/link";
+import { redirect } from "next/navigation";
+import { gql } from "@apollo/client";
+import client from "../client/apolloClient";
+import "suneditor/dist/css/suneditor.min.css";
+import parse from "html-react-parser";
 
-export default function Blog() {
+const GET_POST = gql`
+  query getPost($id: String!) {
+    getPost(id: $id) {
+      id
+      author
+      thumbnailUrl
+      title
+      domain
+      time
+      description
+      content
+    }
+  }
+`;
+
+export default async function Blog({ searchParams }) {
+  let params = await searchParams;
+  let id = params.id;
+
+  if (!id) {
+    redirect("/");
+  }
+
+  const post = await client.query({
+    query: GET_POST,
+    variables: { id },
+  });
+
+  const cleanPost = post.data.getPost;
+
   return (
-    <div className="container-md mt-5">
-      <div className="mb-3 bg-dark text-light p-1 rounded">
-        <Link className="m-2" href="/">
-          Blogs
-        </Link>
-        <span>&gt;</span>
-        <Link className="m-2" href="/">
-          Politics
-        </Link>
-      </div>
-      <h1 className="fw-bold">
-        Understanding Tariffs on Colombia: Impact and Implications
-      </h1>
-      <div className="mt-5">
-        <span className="">Joseph-Karim Dziri</span>
-        <span className=""> - </span>
-        <span className="">10.02.2025</span>
-        <span className=""> - </span>
-        <span className="">17 min read</span>
-      </div>
-      <div className="mt-4">
-        <p>
-          Trade tariffs have been a central topic in international commerce,
-          affecting both developed and developing economies. For Colombia, a
-          country rich in natural resources and agricultural exports, tariffs
-          imposed by other nations can have significant implications on its
-          economy and trade partnerships.
-        </p>
-        <p>
-          What Are Tariffs? Tariffs are taxes or duties imposed by a government
-          on imported goods. They are typically used to protect domestic
-          industries from foreign competition, raise government revenue, or
-          negotiate trade agreements.
-        </p>
-        <p>
-          {" "}
-          Colombia's Key Exports and Affected Sectors Colombia is known for
-          exporting coffee, bananas, flowers, textiles, and minerals. However,
-          tariffs on these goods, particularly from major markets like the
-          United States, the European Union, and Asian countries, can hinder the
-          competitiveness of Colombian products abroad. For example, if a
-          country imposes a 10% tariff on Colombian coffee, the increased price
-          may drive buyers to source coffee from other nations with lower
-          tariffs. This affects Colombian farmers and exporters who rely on
-          steady trade relationships.{" "}
-        </p>
-
-        <p>
-          {" "}
-          Free Trade Agreements (FTAs) Colombia has engaged in multiple free
-          trade agreements to mitigate the impact of tariffs. Notable agreements
-          include the U.S.-Colombia Trade Promotion Agreement and the
-          EU-Colombia Free Trade Agreement. These agreements have reduced or
-          eliminated tariffs on many goods, allowing Colombian products greater
-          access to international markets.{" "}
-        </p>
-
-        <p>
-          {" "}
-          Challenges and Opportunities While FTAs have helped Colombia, certain
-          sectors still face challenges. Non-tariff barriers, such as stringent
-          quality standards or customs regulations, can also restrict market
-          access. On the other hand, the reduction of tariffs has encouraged
-          Colombian businesses to innovate, improve product quality, and
-          diversify their offerings to compete globally.{" "}
-        </p>
-        <p>
-          {" "}
-          The Path Forward To further strengthen its trade position, Colombia
-          can: - Invest in infrastructure to reduce transportation costs. -
-          Promote value-added industries to move beyond raw material exports. -
-          Continue negotiating favorable trade terms with key partners.
-          Understanding and navigating the complexities of tariffs is crucial
-          for Colombia's long-term economic growth and stability. By leveraging
-          trade agreements and improving competitiveness, the nation can better
-          withstand global trade fluctuations.{" "}
-        </p>
+    <div className="container">
+      <div className="row justify-content-center">
+        <div className="col-lg-8 col-md-10 col-sm-12">
+          <h1 className="fw-bold mt-5">{cleanPost.title}</h1>
+          <div>
+            <span>{cleanPost.author}</span>
+            <span> - </span>
+            <span>{cleanPost.domain}</span>
+            <span> - </span>
+            <span>{cleanPost.time} min read</span>
+          </div>
+          <div className="text-center">
+            <img
+              src={cleanPost.thumbnailUrl || "https://picsum.photos/500/300"}
+              alt="Card image cap"
+              className="img-fluid img-thumbnail mt-5"
+              style={{ maxWidth: "75%" }}
+            />
+          </div>
+          <div className="mt-5">{parse(cleanPost.content)}</div>
+        </div>
       </div>
     </div>
   );
