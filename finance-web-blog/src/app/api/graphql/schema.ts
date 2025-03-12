@@ -9,15 +9,15 @@ const typeDefs = `#graphql
     description: String!
     content: String!
 }
-    type ReducedPost {
-        id: String!
-        author: String!
-        thumbnailUrl: String!
-        title: String!
-        domain: String!
-        time: String!
-        description: String!
-    }
+  type ReducedPost {
+      id: String!
+      author: String!
+      thumbnailUrl: String!
+      title: String!
+      domain: String!
+      time: String!
+      description: String!
+  }
   
   input NewPostInput {
     author: String!
@@ -48,8 +48,9 @@ const typeDefs = `#graphql
     getAllPosts: [Post]
     getMainPosts: [ReducedPost]
     getPost(id: String!): Post
+    getDomainPosts(domain: String!): Post
   }
-    
+
   type Mutation {
     createPost(input: NewPostInput!): Post
     updatePost(input: UpdatePostInput!): Post

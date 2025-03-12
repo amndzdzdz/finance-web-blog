@@ -34,6 +34,20 @@ const resolvers = {
         throw new Error("Failed to fetch post");
       }
     },
+
+    getDomainPosts: async (
+      _: any,
+      { domain }: any,
+      context: {
+        dataSources: { posts: { getDomainPosts(domain: any): () => any } };
+      }
+    ) => {
+      try {
+        return await context.dataSources.posts.getDomainPosts(domain);
+      } catch (error) {
+        throw new Error("Failed to fetch post");
+      }
+    },
   },
 
   Mutation: {

@@ -40,6 +40,24 @@ export default class Posts extends MongoDataSource<blogDocument> {
     }
   }
 
+  async getDomainPosts(domain: any) {
+    try {
+      let post = await BlogModel.find({}, [
+        "_id",
+        "author",
+        "thumbnailUrl",
+        "title",
+        "domain",
+        "description",
+      ]).select({
+        domain: domain,
+      });
+      return post;
+    } catch (error) {
+      throw new Error("Failed to find post by id");
+    }
+  }
+
   async updatePost({ input }: any) {
     try {
       const { id, ...updatedValues } = input;
