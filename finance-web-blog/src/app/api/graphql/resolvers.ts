@@ -26,7 +26,7 @@ const resolvers = {
     getPost: async (
       _: any,
       { id }: any,
-      context: { dataSources: { posts: { getPost: () => any } } }
+      context: { dataSources: { posts: { getPost(id: any): () => any } } }
     ) => {
       try {
         return await context.dataSources.posts.getPost(id);
