@@ -217,9 +217,9 @@ const MyComponent = (props) => {
             }}
           >
             <option defaultValue>Choose a domain</option>
-            <option value="Microeconomy">Microeconomy</option>
-            <option value="Macroeconomy">Macroeconomy</option>
-            <option value="Politics">Politics</option>
+            <option value="microeconomy">microeconomy</option>
+            <option value="macroeconomy">macroeconomy</option>
+            <option value="politics">politics</option>
           </select>
           <input
             type="number"
