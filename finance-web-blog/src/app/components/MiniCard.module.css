@@ -1,0 +1,41 @@
+.card {
+  background-color: #fff;
+  border: none;
+  width: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+}
+
+.imageContainer {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative; /* Needed for Next.js Image with layout="fill" */
+}
+
+.imageContainer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}

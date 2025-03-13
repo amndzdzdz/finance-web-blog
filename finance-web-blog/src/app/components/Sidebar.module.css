@@ -1,0 +1,27 @@
+.sidebar {
+  background-color: #343a40;
+  color: #fff;
+  padding: 1rem;
+  border-radius: 0.25rem;
+}
+
+/* Hide sidebar on small screens */
+@media (max-width: 992px) {
+  .sidebar {
+    display: none;
+  }
+}
+
+/* On large screens, display as a fixed sidebar on the right */
+@media (min-width: 992px) {
+  .sidebar {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    width: 250px; /* Adjust as needed */
+    background-color: #f4f4f4; /* Example background */
+    padding: 1rem;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  }
+}
