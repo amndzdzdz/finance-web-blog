@@ -9,6 +9,17 @@ const typeDefs = `#graphql
     description: String!
     content: String!
 }
+
+  type DomainPost {
+    id: String!
+    author: String!
+    thumbnailUrl: String!
+    title: String!
+    domain: String!
+    time: String!
+    description: String!
+}
+
   type ReducedPost {
       id: String!
       author: String!
@@ -46,9 +57,10 @@ const typeDefs = `#graphql
 
   type Query {
     getAllPosts: [Post]
-    getMainPosts: [ReducedPost]
+    getMainPosts(offset: Int, limit: Int): [ReducedPost]
     getPost(id: String!): Post
-    getDomainPosts(domain: String!): Post
+    getDomainPosts(domain: String!, offset: Int, limit: Int): [DomainPost]
+    getRelatedPosts(blogId: String): [ReducedPost]
   }
 
   type Mutation {

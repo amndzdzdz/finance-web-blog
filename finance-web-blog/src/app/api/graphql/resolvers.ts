@@ -12,17 +12,66 @@ const resolvers = {
       }
     },
 
-    getMainPosts: async (
+    getDomainPosts: async (
       _: any,
-      __: any,
-      context: { dataSources: { posts: { getMainPosts: () => any } } }
+      { domain, offset, limit }: any,
+      context: {
+        dataSources: {
+          posts: {
+            getDomainPosts: (domain: any, offset: any, limit: any) => any;
+          };
+        };
+      }
     ) => {
       try {
-        return await context.dataSources.posts.getMainPosts();
+        const posts = await context.dataSources.posts.getDomainPosts(
+          domain,
+          offset,
+          limit
+        );
+        console.log(posts);
+        return posts;
+      } catch (error) {
+        throw new Error("Failed to fetch post");
+      }
+    },
+
+    getRelatedPosts: async (
+      _: any,
+      { blogId }: any,
+      context: {
+        dataSources: {
+          posts: {
+            getRelatedPosts: (blogId: any) => any;
+          };
+        };
+      }
+    ) => {
+      try {
+        const posts = await context.dataSources.posts.getRelatedPosts(blogId);
+
+        return posts;
+      } catch (error) {
+        throw new Error("Failed to fetch post");
+      }
+    },
+
+    getMainPosts: async (
+      _: any,
+      { offset, limit }: any,
+      context: {
+        dataSources: {
+          posts: { getMainPosts: (offset: any, limit: any) => any };
+        };
+      }
+    ) => {
+      try {
+        return await context.dataSources.posts.getMainPosts(offset, limit);
       } catch (error) {
         throw new Error("Failed to fetch posts");
       }
     },
+
     getPost: async (
       _: any,
       { id }: any,
@@ -30,20 +79,6 @@ const resolvers = {
     ) => {
       try {
         return await context.dataSources.posts.getPost(id);
-      } catch (error) {
-        throw new Error("Failed to fetch post");
-      }
-    },
-
-    getDomainPosts: async (
-      _: any,
-      { domain }: any,
-      context: {
-        dataSources: { posts: { getDomainPosts(domain: any): () => any } };
-      }
-    ) => {
-      try {
-        return await context.dataSources.posts.getDomainPosts(domain);
       } catch (error) {
         throw new Error("Failed to fetch post");
       }
