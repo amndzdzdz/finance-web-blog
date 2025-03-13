@@ -4,31 +4,37 @@ import NewsCard from "./components/NewsCard";
 import { gql } from "@apollo/client";
 import client from "./client/apolloClient";
 import Head from "next/head";
+import BlogList from "./components/BlogList";
 
-// GraphQL Query
-const GET_MAIN_POSTS = gql`
-  query {
-    getMainPosts {
-      id
-      author
-      thumbnailUrl
-      title
-      domain
-      time
-      description
+const INITIAL_NUMBER_OF_POSTS = 9;
+
+export async function fetchPosts(offset = 0, limit = 4) {
+  const GET_MAIN_POSTS = gql`
+    query GetMainPosts($offset: Int, $limit: Int) {
+      getMainPosts(offset: $offset, limit: $limit) {
+        id
+        author
+        thumbnailUrl
+        title
+        domain
+        time
+        description
+      }
     }
-  }
-`;
+  `;
 
-async function fetchPosts() {
-  const { data } = await client.query({ query: GET_MAIN_POSTS });
-  return data.getMainPosts || [];
+  const { data } = await client.query({
+    query: GET_MAIN_POSTS,
+    variables: { offset, limit },
+  });
+
+  let posts = data.getMainPosts;
+
+  return posts || [];
 }
 
 export default async function Home() {
-  const arrayPreReverse = await fetchPosts();
-  let posts = arrayPreReverse.slice(0);
-  posts = posts.reverse();
+  const initialPosts = await fetchPosts(0, INITIAL_NUMBER_OF_POSTS);
 
   return (
     <div>
@@ -36,25 +42,7 @@ export default async function Home() {
         <link rel="preload" as="image" href="/img.webp" type="image/webp" />
       </Head>
       <HeaderImage />
-      <div className="container mt-5">
-        {posts.length === 0 ? (
-          <p>No posts available.</p>
-        ) : (
-          <div>
-            <h1 className="text-center display-5 fw-bold">Latest Posts</h1>
-            <div className="row">
-              {posts.map((post, index) => (
-                <div
-                  key={post.id}
-                  className="col-md-4 d-flex justify-content-center mb-4"
-                >
-                  <NewsCard post={post} />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+      <BlogList initialPosts={initialPosts}></BlogList>
     </div>
   );
 }
