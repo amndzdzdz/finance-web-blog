@@ -7,7 +7,12 @@ export default function Home() {
   const { user } = useUser();
 
   if (!user) {
-    return <SignIn />;
+    return (
+      <div className="min-vh-100 bg-primary d-flex justify-content-center align-items-center">
+        {" "}
+        <SignIn routing="hash" />
+      </div>
+    );
   }
 
   return (

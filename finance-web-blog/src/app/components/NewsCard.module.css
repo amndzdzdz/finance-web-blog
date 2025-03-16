@@ -1,0 +1,11 @@
+.readMoreButton {
+  transition: all 0.3s ease-in-out;
+}
+
+.cardHover:hover .readMoreButton {
+  background-color: var(
+    --bs-primary
+  ) !important; /* Uses Bootstrap primary color */
+  color: white !important;
+  border-color: var(--bs-primary) !important;
+}

@@ -8,6 +8,8 @@ import Image from "next/image";
 import Breadcroumb from "../components/Breadcroumb";
 import "./blog.css";
 import Sidebar from "../components/Sidebar";
+import Commentsection from "../components/Commentsection";
+import CommentForm from "../components/CommentForm";
 
 const GET_POST = gql`
   query getPost($id: String!) {
@@ -16,10 +18,18 @@ const GET_POST = gql`
       author
       thumbnailUrl
       title
+      date
       domain
       time
       description
       content
+      comments {
+        comment
+        date
+        email
+        website
+        name
+      }
     }
   }
 `;
@@ -36,6 +46,7 @@ export default async function Blog({ searchParams }) {
   const post = await client.query({
     query: GET_POST,
     variables: { id },
+    fetchPolicy: "network-only",
   });
 
   const cleanPost = post.data.getPost;
@@ -50,9 +61,9 @@ export default async function Blog({ searchParams }) {
             <h1 className="fw-bold">{cleanPost.title}</h1>
             <div>
               <span>{cleanPost.author}</span>
-              <span> - </span>
-              <span>{cleanPost.domain}</span>
-              <span> - </span>
+              <span className="ms-2 me-2"> &bull;</span>
+              <span>{cleanPost.date}</span>
+              <span className="ms-2 me-2"> &bull;</span>
               <span>{cleanPost.time} min read</span>
             </div>
             <div className="text-center mt-5">
@@ -70,6 +81,8 @@ export default async function Blog({ searchParams }) {
             <div className="mt-5">{parse(cleanPost.content)}</div>
           </div>
         </div>
+        <Commentsection comments={cleanPost.comments}></Commentsection>
+        <CommentForm id={id}></CommentForm>
       </div>
     </>
   );

@@ -1,0 +1,8 @@
+/* Center all images inside the blog content */
+.__se__float-center figure {
+  display: block;
+  margin: 20px auto; /* Centers horizontally with spacing */
+  max-width: 100%; /* Ensures images stay responsive */
+  height: auto; /* Keeps aspect ratio */
+  border-radius: 8px; /* Optional: adds rounded corners */
+}
