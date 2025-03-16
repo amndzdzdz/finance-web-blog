@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import "suneditor/dist/css/suneditor.min.css"; // Import Sun Editor's CSS File
 import { buttonList } from "suneditor-react";
 import { CldUploadWidget } from "next-cloudinary";
+import { useUser } from "@clerk/nextjs";
 
 const GET_ALL_POSTS = gql`
   query {
@@ -53,8 +54,15 @@ const SunEditor = dynamic(() => import("suneditor-react"), {
 });
 
 export default function Editpost() {
-  // Protect the page from users who are not admins
-  <SignIn />;
+  const { user } = useUser();
+
+  if (!user) {
+    return (
+      <div className="min-vh-100 bg-primary d-flex justify-content-center align-items-center">
+        <SignIn routing="hash" />
+      </div>
+    );
+  }
 
   const [loading, setLoading] = useState(true);
   const [blogPosts, setBlogPosts] = useState([]);

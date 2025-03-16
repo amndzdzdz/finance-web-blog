@@ -8,26 +8,23 @@ import client from "../../../client/apolloClient";
 import { useState } from "react";
 import { CldUploadWidget } from "next-cloudinary";
 import { gql } from "@apollo/client";
-
-const CREATE_POST = gql`
-  mutation createPost($input: NewPostInput!) {
-    createPost(input: $input) {
-      author
-      thumbnailUrl
-      title
-      domain
-      time
-      description
-      content
-    }
-  }
-`;
+import { useUser } from "@clerk/nextjs";
+import { SignIn } from "@clerk/nextjs";
 
 const SunEditor = dynamic(() => import("suneditor-react"), {
   ssr: false,
 });
 
 const MyComponent = (props) => {
+  const { user } = useUser();
+
+  if (!user) {
+    return (
+      <div className="min-vh-100 bg-primary d-flex justify-content-center align-items-center">
+        <SignIn routing="hash" />
+      </div>
+    );
+  }
   const [editorContent, setEditorContent] = useState(null);
   const [thumbnailUrl, setThumbnailUrl] = useState();
   const [title, setTitle] = useState(null);
@@ -89,6 +86,28 @@ const MyComponent = (props) => {
   }
 
   async function sendPost() {
+    const CREATE_POST = gql`
+      mutation createPost($input: NewPostInput!) {
+        createPost(input: $input) {
+          author
+          thumbnailUrl
+          title
+          date
+          domain
+          time
+          description
+          content
+          comments {
+            comment
+            date
+            email
+            website
+            name
+          }
+        }
+      }
+    `;
+
     if (!thumbnailUrl) {
       alert("A thumbnail is required!");
       return;
@@ -124,6 +143,14 @@ const MyComponent = (props) => {
       return;
     }
 
+    var today = new Date();
+    var date =
+      today.getFullYear() +
+      "-" +
+      (today.getMonth() + 1) +
+      "-" +
+      today.getDate();
+
     try {
       const data = await client.mutate({
         mutation: CREATE_POST,
@@ -132,6 +159,7 @@ const MyComponent = (props) => {
             author: author,
             thumbnailUrl: thumbnailUrl,
             title: title,
+            date: date,
             domain: domain,
             time: time,
             description: description,
