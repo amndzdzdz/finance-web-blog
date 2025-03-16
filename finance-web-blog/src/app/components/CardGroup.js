@@ -1,16 +1,70 @@
+"use client";
+import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Link from "next/link";
+import Image from "next/image";
+import styles from "./CardGroup.module.css";
+import { useInView } from "react-intersection-observer";
+import { gql } from "@apollo/client";
+import client from "../client/apolloClient";
 
-export default function CardGroup({ cards }) {
+const NUMBER_OF_POSTS_TO_FETCH = 6;
+
+async function fetchPosts(domain, offset = 0, limit = 4) {
+  const GET_DOMAIN_POSTS = gql`
+    query getDomainPosts($domain: String!, $offset: Int, $limit: Int) {
+      getDomainPosts(domain: $domain, offset: $offset, limit: $limit) {
+        id
+        thumbnailUrl
+        title
+        domain
+        description
+      }
+    }
+  `;
+
+  const { data } = await client.query({
+    query: GET_DOMAIN_POSTS,
+    variables: { domain, offset, limit },
+  });
+
+  let posts = data.getDomainPosts;
+
+  return posts || [];
+}
+
+export default function CardGroup({ domain, initialPosts }) {
+  const [posts, setPosts] = useState(initialPosts);
+  const [offset, setOffset] = useState(NUMBER_OF_POSTS_TO_FETCH);
+  const { ref, inView } = useInView();
+
+  async function loadMorePosts() {
+    const fetchedPosts = await fetchPosts(
+      domain,
+      offset,
+      NUMBER_OF_POSTS_TO_FETCH
+    );
+    setPosts([...posts, ...fetchedPosts]);
+    setOffset((offset) => offset + NUMBER_OF_POSTS_TO_FETCH);
+  }
+
+  useEffect(() => {
+    if (inView) {
+      loadMorePosts();
+    }
+  }, [inView]);
+
   return (
-    <div className="container">
-      {cards.length === 0 ? (
+    <div className="container ps-4 pe-4">
+      {posts.length === 0 ? (
         <p className="text-center mt-4">No blog posts available.</p>
       ) : (
-        cards.map((post, index) => (
+        posts.map((post, index) => (
           <div
             key={post.id}
             className={`row align-items-center mb-4 shadow bg-white rounded ${
+              styles.cardHover
+            } ${
               index % 2 === 1
                 ? "flex-md-row-reverse flex-column"
                 : "flex-md-row flex-column"
@@ -28,15 +82,20 @@ export default function CardGroup({ cards }) {
                 overflow: "hidden",
               }}
             >
-              <img
+              <Image
                 src={post.thumbnailUrl || "https://picsum.photos/500/300"}
                 alt="Card image cap"
+                width={0}
+                height={0}
+                sizes="100vw"
                 style={{
                   width: "100%",
                   height: "100%", // Ensure full height on desktop
                   maxHeight: "250px", // Prevents image from taking too much space on mobile
                   objectFit: "cover", // Crop image instead of stretching
                 }}
+                priority={false}
+                loading="lazy"
               />
             </div>
 
@@ -56,10 +115,10 @@ export default function CardGroup({ cards }) {
                 }}
               >
                 <Link
-                  className="fw-bold fs-4 text-dark text-decoration-underline d-block"
+                  className="fw-bold fs-4 text-dark text-decoration-none d-block"
                   href={{
                     pathname: "/blogs",
-                    query: { id: post.id },
+                    query: { id: post.id, domain: post.domain },
                   }}
                   style={{
                     display: "block", // Fixes truncation issue
@@ -70,7 +129,7 @@ export default function CardGroup({ cards }) {
                   {post.title}
                 </Link>
               </div>
-
+              <hr></hr>
               {/* Description Section - Now Limited to Exactly 2 Lines */}
               <div
                 style={{
@@ -96,9 +155,9 @@ export default function CardGroup({ cards }) {
                 <Link
                   href={{
                     pathname: "/blogs",
-                    query: { id: post.id },
+                    query: { id: post.id, domain: post.domain },
                   }}
-                  className="btn btn-outline-primary"
+                  className={`btn btn-outline-primary ${styles.readMoreButton}`}
                 >
                   Read More
                 </Link>
@@ -107,6 +166,7 @@ export default function CardGroup({ cards }) {
           </div>
         ))
       )}
+      <div ref={ref}></div>
     </div>
   );
 }
