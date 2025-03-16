@@ -14,17 +14,27 @@
     "@as-integrations/next": "^3.2.0",
     "@clerk/nextjs": "^6.11.3",
     "@popperjs/core": "^2.11.8",
+    "@types/react": "^18.3.18",
     "apollo-datasource-mongodb": "^0.6.0",
+    "astro": "^5.3.1",
     "bootstrap": "^5.3.3",
+    "cloudinary": "^2.5.1",
+    "formidable": "^3.5.2",
     "graphql": "^16.10.0",
+    "html-react-parser": "^5.2.2",
     "mongoose": "^8.10.0",
     "next": "15.1.6",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "next-cloudinary": "^6.16.0",
+    "quill-image-resize-module-react": "^3.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-quill": "^2.0.0",
+    "react-quill-new": "^3.3.3",
+    "suneditor": "^2.47.5",
+    "suneditor-react": "^3.6.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@types/react": "19.0.8",
     "eslint": "^9",
     "eslint-config-next": "15.1.6"
   }
