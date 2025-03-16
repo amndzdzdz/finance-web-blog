@@ -1,13 +1,23 @@
 const typeDefs = `#graphql
+  type Comment {
+    name: String
+    email: String
+    website: String
+    date: String
+    comment: String
+    }
+
   type Post {
     id: String!
     author: String!
     thumbnailUrl: String!
     title: String!
+    date: String!
     domain: String!
     time: String!
     description: String!
     content: String!
+    comments: [Comment]
 }
 
   type DomainPost {
@@ -29,15 +39,34 @@ const typeDefs = `#graphql
       time: String!
       description: String!
   }
+
+  input CommentInput {
+    name: String
+    email: String
+    website: String
+    date: String
+    comment: String
+    }
+
+  input NewCommentInput {
+    id: String
+    name: String
+    email: String
+    website: String
+    date: String
+    comment: String
+    }
   
   input NewPostInput {
     author: String!
     thumbnailUrl: String!
     title: String!
+    date: String!
     domain: String!
     time: String!
     description: String!
     content: String!
+    comments: [CommentInput]
   }
 
   input DeletePostInput {
@@ -67,6 +96,7 @@ const typeDefs = `#graphql
     createPost(input: NewPostInput!): Post
     updatePost(input: UpdatePostInput!): Post
     deletePost(input: DeletePostInput!): Post
+    addComment(input: NewCommentInput!): Post
   }
 `;
 

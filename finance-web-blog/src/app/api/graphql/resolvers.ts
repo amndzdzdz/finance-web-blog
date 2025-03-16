@@ -29,7 +29,7 @@ const resolvers = {
           offset,
           limit
         );
-        console.log(posts);
+
         return posts;
       } catch (error) {
         throw new Error("Failed to fetch post");
@@ -117,6 +117,17 @@ const resolvers = {
         });
 
         return deletedPost;
+      } catch (error) {
+        throw new Error("Failed to delete post", error.message);
+      }
+    },
+
+    addComment: async (_: any, { input }: any, context: any) => {
+      try {
+        const comment = await context.dataSources.posts.addComment({
+          input,
+        });
+        return comment;
       } catch (error) {
         throw new Error("Failed to delete post", error.message);
       }

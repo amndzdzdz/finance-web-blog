@@ -1,7 +1,6 @@
 import BlogModel from "../models";
 import { MongoDataSource } from "apollo-datasource-mongodb";
 import { ObjectId } from "mongoose";
-import Blog from "../../../blogs/page";
 import mongoose from "mongoose";
 
 interface blogDocument {
@@ -70,7 +69,9 @@ export default class Posts extends MongoDataSource<blogDocument> {
 
   async getPost(id: any) {
     try {
-      return await BlogModel.findById(id);
+      const post = await BlogModel.findById(id);
+
+      return post;
     } catch (error) {
       throw new Error("Failed to find post by id");
     }
@@ -108,6 +109,33 @@ export default class Posts extends MongoDataSource<blogDocument> {
   async createPost({ input }: any) {
     try {
       return await BlogModel.create({ ...input });
+    } catch (error) {
+      throw new Error("Failed to create posts");
+    }
+  }
+
+  async addComment({ input }: any) {
+    try {
+      const { id, ...updatedValues } = input;
+      const post = await BlogModel.findById(id);
+      const comments = post.comments;
+      var updatedPost = null;
+
+      if (comments.length === 0) {
+        updatedPost = await BlogModel.findByIdAndUpdate(
+          id,
+          { comments: updatedValues },
+          {
+            new: true,
+          }
+        );
+      } else {
+        const newComments = { comments: comments.concat(updatedValues) };
+        updatedPost = await BlogModel.findByIdAndUpdate(id, newComments, {
+          new: true,
+        });
+      }
+      return updatedPost;
     } catch (error) {
       throw new Error("Failed to create posts");
     }
