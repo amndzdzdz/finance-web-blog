@@ -5,7 +5,9 @@ import styles from "./MiniCard.module.css";
 
 export default function MiniCard({ title, imageSrc, id, domain }) {
   return (
-    <div className={`${styles.card} text-center`}>
+    <div
+      className={`${styles.card} text-center border rounded shadow-sm overflow-hidden`}
+    >
       <Link
         className="card-body"
         href={{

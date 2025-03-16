@@ -29,8 +29,10 @@ export default async function Sidebar({ blogId, domain }) {
   let posts = await fetchPosts(blogId);
 
   return (
-    <div className={`text-center bg-dark rounded text-light ${styles.sidebar}`}>
-      <h4 className="display-9 fw-bold">Related Posts</h4>
+    <div
+      className={`border rounded shadow-sm overflow-hidden text-center bg-dark rounded text-light ${styles.sidebar}`}
+    >
+      <h4 className="display-9 fw-bold text-light">Related Posts</h4>
       <Minicard
         title={posts[0].title}
         imageSrc={posts[0].thumbnailUrl}
