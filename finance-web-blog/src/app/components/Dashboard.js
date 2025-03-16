@@ -1,6 +1,10 @@
-export default function Dashboard() {
+import React from "react";
+
+export default function Dashboard({ input }) {
+  let domain = input["domain"];
+
   return (
-    <div className="container m-5">
+    <div className="m-5">
       <form>
         <div className="form-group">
           <input
@@ -9,6 +13,7 @@ export default function Dashboard() {
             className="form-control"
             id="titleInput"
             placeholder="Title"
+            defaultValue={"edit" in input ? input["heading"] : ""}
           ></input>
         </div>
         <div className="form-group mt-3">
@@ -18,6 +23,7 @@ export default function Dashboard() {
             className="form-control"
             id="summaryInput"
             placeholder="Enter a short description that will be displayed on the webpage"
+            defaultValue={"edit" in input ? input["summary"] : ""}
           ></input>
         </div>
         <div className="form-group mt-3">
@@ -27,6 +33,7 @@ export default function Dashboard() {
             name="author"
             id="author"
             placeholder="Author"
+            defaultValue={"edit" in input ? input["author_name"] : ""}
           ></input>
         </div>
         <select
@@ -34,7 +41,9 @@ export default function Dashboard() {
           aria-label="Default select example"
           name="domain"
         >
-          <option selected>Select domain</option>
+          <option defaultValue>
+            {"edit" in input ? input["domain"] : "Select domain"}
+          </option>
           <option value="1">Microeconomy</option>
           <option value="2">Macroeconomy</option>
           <option value="3">Politics</option>
@@ -45,15 +54,14 @@ export default function Dashboard() {
           id="timeInput"
           name="time"
           placeholder="Estimated Read time"
+          defaultValue={"edit" in input ? parseInt(input["read_time"]) : ""}
         ></input>
         <textarea
           className="form-control min-vh-100 mt-3"
           placeholder="Content"
           name="content"
+          defaultValue={"edit" in input ? input["content"] : ""}
         ></textarea>
-        <button type="submit" className="btn btn-primary mt-3">
-          Upload post
-        </button>
       </form>
     </div>
   );
